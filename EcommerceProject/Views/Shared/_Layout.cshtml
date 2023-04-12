@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EcommerceProject</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/EcommerceProject.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body style="background-color: #e3f2fd">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm  bg-black text-light border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index"> <img src="https://i.pinimg.com/736x/7c/d7/81/7cd781a7a29b266d6efa30b01cd3a238.jpg" class="rounded me-3" alt="Cinque Terre" width="80" height="35"> My Shop </a>
+                <button class="navbar-toggler text-white me-5" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon btn-close-white"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                            @if (!String.IsNullOrEmpty(Context.Request.HttpContext.Session.GetString("userName")) && (Context.Request.HttpContext.Session.GetString("userRole")) == "Admin")
+                            {
+                            <li class="nav-item">
+                                <a class="nav-link text-white btn btn-outline-primary ms-5" asp-area="" asp-controller="Product" asp-action="AddNewProduct">Add Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white btn btn-outline-primary ms-4" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
+                            </li>
+
+                            <li class="nav-item collapse navbar-collapse justify-content-end">
+                                  <a class="nav-link text-white btn btn-outline-primary me-5" asp-area="" asp-controller="Cart" asp-action="ViewCart">View Cart</a>
+                                <a class="nav-link text-white btn btn-outline-primary me-5" asp-area="" asp-controller="Order" asp-action="GetMyOrders">My Orders</a>
+                                <a class="nav-link text-white btn btn-outline-primary me-5" asp-area="" asp-controller="User" asp-action="Logout"><i class="fa fa-power-off" aria-hidden="true"></i> Log Out</a>
+                            </li>
+
+                            }
+                        @if (!String.IsNullOrEmpty(Context.Request.HttpContext.Session.GetString("userName")) && (Context.Request.HttpContext.Session.GetString("userRole")) == "Customer")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white btn btn-outline-primary ms-4" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
+                            </li>
+
+                            <li class="nav-item collapse navbar-collapse justify-content-end">
+                                <a class="nav-link text-white btn btn-outline-primary me-5" asp-area="" asp-controller="Order" asp-action="GetMyOrders">My Orders</a>
+                                <a class="nav-link text-white btn btn-outline-primary me-5" asp-area="" asp-controller="User" asp-action="Logout"><i class="fa fa-power-off" aria-hidden="true"></i> Log Out</a>
+                            </li>
+
+                        }
+                        @if (String.IsNullOrEmpty(Context.Request.HttpContext.Session.GetString("userName")))
+                            {
+
+
+                                <li class="nav-item collapse navbar-collapse justify-content-end">
+                                <a class="nav-link text-white btn btn-outline-primary me-5" asp-area="" asp-controller="User" asp-action="Login"><i class="fa fa-power-off" aria-hidden="true"></i> LogIn</a>
+                                </li>
+
+                               
+                            }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container-fluid">
+            &copy; 2023 - EcommerceProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
