@@ -92,8 +92,8 @@ namespace EcommerceProject.Controllers
                     HttpContext.Session.SetString("userRole", user.Role);
                     ViewBag.user = user.UserName;
 
-                    if (user.Role == "Admin" || user.Role=="Customer")
-                        return RedirectToAction("Index", "Product");
+                    if (user.Role == "Admin")
+                        return RedirectToAction("OrderContSales", "Product");
                     else
                         return RedirectToAction("Index", "Home");
                 }

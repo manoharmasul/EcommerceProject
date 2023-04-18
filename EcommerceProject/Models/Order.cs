@@ -20,6 +20,7 @@ namespace EcommerceProject.Models
     {
         //Id,CustomerId,ProductId,TotalAmmount,OrderStatus,BillingAddress,ShippingAddress,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,IsDeleted
 
+        public long SrNo { get; set; }
         public long Id { get; set; }
         public string ImageUrl { get; set; }
         public string ProductName { get; set; }
@@ -29,10 +30,16 @@ namespace EcommerceProject.Models
         public string ShippingAddress { get; set; }
         public long Quantity { get; set; }
         public string MobileNo { get; set; }
-
        
     }
+    public class UpdateOrderStatus
+    {
+        //Id,CustomerId,ProductId,TotalAmmount,OrderStatus,BillingAddress,ShippingAddress,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,IsDeleted
+        public long Id { get; set; }
+        public string OrderStatus { get; set; }
+        public long ModifiedBy { get; set; }
 
-   
+    }
+
 
 }

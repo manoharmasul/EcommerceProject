@@ -3,7 +3,11 @@
 @{
     ViewData["Title"] = "Details";
 }
-
+<h5 class="text-center">Shop Now</h5>
+<br />
+<br />
+<br />
+<br />
 
 <div class="container-fluid">
 
@@ -141,7 +145,7 @@
                         <div class="row">
                             <div class="col-1"></div>
                             <div class="col-6">
-                                <span class="badge bg-warning text-dark mt-2 mb-5">  <h5>Rs : @Model.Price -/ </h5></span>
+                                <span class="badge bg-warning text-dark mt-2 mb-5">  <h5>Rs : @Model.SellingPrice -/ </h5></span>
                             </div>
                             <div class="col-5"></div>
 
@@ -166,7 +170,7 @@
 
                         // <-- Action Method Name
 
-                        new { id=Model.Id,price=Model.Price}, // <-- Route arguments
+                        new { id=Model.Id,price=Model.SellingPrice}, // <-- Route arguments
 
                         new {@class="btn btn-success m-2 mb-3", data_val="abc"}  // <-- htmlArguments
 

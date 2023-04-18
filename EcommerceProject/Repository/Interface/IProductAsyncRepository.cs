@@ -6,7 +6,8 @@ namespace EcommerceProject.Repository.Interface
     {
         Task<long> AddNewProduct(ProductAdd product);
         Task<long> UpdateProduct(ProductAdd product);
-        Task<List<ProductAdd>> GetAllProducts();
+        Task<GetProducts> GetAllProducts();
+        Task<GetProductsOrderCount> ProductsOrderCount();
         Task<ProductAdd> GetProductById(long id);
         Task<List<ProductAdd>> GetProductByType(string category);
         Task<List<ProductAdd>> GetProductBySearchText(string searchtext);

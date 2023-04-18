@@ -17,7 +17,7 @@ namespace EcommerceProject.Repository
         {
             //Id,ProductName,ImageUrl,Price,Description,Specification,TypeId,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,IsDeleted
 
-            var query = @"insert into tblProducts (ProductName,ImageUrl,Price,Description,Specification,TypeId,CreatedDate,IsDeleted) values(@ProductName,@ImageUrl,@Price,@Description,@Specification,@TypeId,GetDate(),0)";
+            var query = @"insert into tblProducts (ProductName,ImageUrl,SellingPrice,BuyPrice,Description,Specification,TypeId,CreatedDate,IsDeleted) values(@ProductName,@ImageUrl,@SellingPrice,@,@Description,@Specification,@TypeId,GetDate(),0)";
             using(var connection=context.CreateConnection())
             {
                 var result=await connection.ExecuteAsync(query,product);
@@ -26,11 +26,19 @@ namespace EcommerceProject.Repository
             }
         }
 
-        public async Task<List<ProductAdd>> GetAllProducts()
+        public async Task<GetProducts> GetAllProducts()
         {
+            GetProducts dashData=new GetProducts();
+
             List<ProductAdd> prodlist=new List<ProductAdd>();    
-            var queryprod= @"select Id,ProductName,ImageUrl,Price,Description,Specification,TypeId  from tblProducts where IsDeleted=0";
+
+            var queryprod= @"select Id,ProductName,ImageUrl,SellingPrice,Description,Specification,TypeId  from tblProducts where IsDeleted=0";
+
             var queryprodtype = "select * from tblProductType ";
+
+            var OrderCount = "Select Count(*) from tblOrder where IsDeleted=0";
+
+
             using (var connection=context.CreateConnection())
             {
                 var products=await connection.QueryAsync<ProductAdd>(queryprod);
@@ -39,13 +47,14 @@ namespace EcommerceProject.Repository
 
                 var prodtype = (await connection.QueryAsync<GetProductTypes>(queryprodtype)).ToList();
 
-               foreach(var product in prodlist)
-                {
-                    //Id,ProductName,ImageUrl,Price,Description,Specification,TypeId,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,IsDeleted
-                    product.prodtype = prodtype;
+                var ordcount =await connection.QuerySingleOrDefaultAsync<long>(OrderCount);             
 
-                }
-                return products.ToList();
+                dashData.Productlist= products.ToList();
+                dashData.OrderCount =ordcount;
+                dashData.ProdTypeList = prodtype;
+
+                return dashData;
+
             }
         }
 
@@ -87,7 +96,7 @@ namespace EcommerceProject.Repository
         public async Task<int> InsertDemo(Demo demo)
         {
             var result = 0;
-            var query = @"insert into tblDemo(Demo,Price)values(@Demo,@Price) ";
+            var query = @"insert into tblDemo(Demo,SellingPrice)values(@Demo,@SellingPrice) ";
            using(var connections=context.CreateConnection())
             {
               
@@ -96,6 +105,54 @@ namespace EcommerceProject.Repository
                 
                 return result;
             }
+        }
+
+        public async Task<GetProductsOrderCount> ProductsOrderCount()
+        {
+            GetProductsOrderCount getProductsOrderCount = new GetProductsOrderCount();
+            var queryprodcont = @"select pt.ProductType,COUNT(p.TypeId) as Available from tblProductType pt 
+                        inner join tblProducts p on pt.Id=p.TypeId group by p.typeid,pt.productType";
+
+            var queryOrderCount = @"Select Count(*) from tblOrder where IsDeleted=0";
+
+            var queryOrderPending = @"select Count(*) from tblOrder where IsDeleted=0 and OrderStatus='Pending'";
+
+            var querytotatSell = @"select Sum(TotalAmmount) from tblOrder where IsDeleted=0";
+
+            var querytotatBuyprice = @"select Sum(p.BuyPrice) from tblOrder o 
+                                    inner join tblProducts p on o.ProductId=p.Id
+                                    where o.IsDeleted=0";
+            var querytotalSellprice = @"select Sum(p.SellingPrice) from tblOrder o 
+                                    inner join tblProducts p on o.ProductId=p.Id
+                                    where o.IsDeleted=0";
+
+            var queryToDaysOrders = @"select Count(*) from tblOrder where IsDeleted=0 And CONVERT(DATE,CreatedDate) =  CONVERT(DATE, GETDATE()) ";
+            var querytopselingproduct = @"select p.ProductName,Count(o.Id) as NoOfSales from tblOrder o 
+                                     inner join tblProducts p on o.ProductId=p.Id group by p.ProductName order by NoOfSales desc";
+
+            using (var connection=context.CreateConnection())
+            {
+
+                var prodcount = await connection.QueryAsync<GetProductsavailability>(queryprodcont);
+                var orderscount = await connection.QuerySingleOrDefaultAsync<long>(queryOrderCount);
+                var orderpending = await connection.QuerySingleOrDefaultAsync<long>(queryOrderPending);
+                var totasell=await connection.QuerySingleOrDefaultAsync<long>(querytotatSell);
+                var totalBuy=await connection.QuerySingleOrDefaultAsync<long>(querytotatBuyprice);
+                var totalSell=await connection.QuerySingleOrDefaultAsync<long>(querytotalSellprice);
+                var todaysorders = await connection.QuerySingleOrDefaultAsync<long>(queryToDaysOrders);
+                var topselprod = await connection.QueryAsync<GetTopSellingItems>(querytopselingproduct);
+
+                getProductsOrderCount.proavailability = prodcount.ToList();
+                getProductsOrderCount.OrderCount = orderscount;
+                getProductsOrderCount.OrderPendings = orderpending;
+                getProductsOrderCount.TotalSales = totasell;
+                getProductsOrderCount.ToDaysOrder=todaysorders;
+                getProductsOrderCount.TotalProfite=totasell-totalBuy;
+                getProductsOrderCount.gettopselingitems=topselprod.ToList();
+
+                return getProductsOrderCount;   
+            }
+
         }
 
         public Task<long> UpdateProduct(ProductAdd product)

@@ -13,9 +13,20 @@ namespace EcommerceProject.Repository
             this.context = context;
         }
 
-        public Task<List<Order>> GetAllOrders()
+        public async Task<List<GetOrder>> GetAllOrders()
         {
-            throw new NotImplementedException();
+            var query = @"select
+                        ROW_NUMBER() OVER(ORDER BY o.Id desc) as SrNo,
+                        o.Id,p.ProductName,o.ShippingAddress,o.OrderStatus,o.Quantity,
+                        o.BillingAddress,o.CreatedDate,
+                        o.MobileNo,o.TotalAmmount from tblOrder o
+                        inner join tblProducts p on o.ProductId=p.Id where  o.IsDeleted=0 Order By Id Desc";
+            using(var connection=context.CreateConnection())
+            {
+                var orders = await connection.QueryAsync<GetOrder>(query);
+
+                return orders.ToList();
+            }
         }
 
         public async Task<List<GetOrder>> GetMyOrders(long userid)
@@ -28,6 +39,16 @@ namespace EcommerceProject.Repository
             {
                 var orders = await connection.QueryAsync<GetOrder>(query,new { UserId=userid });
                 return orders.ToList();
+            }
+        }
+
+        public async Task<Order> GetOrderById(long id)
+        {
+            var query = @"Select * From tblOrder Where Id=@Id";
+            using(var connection=context.CreateConnection())
+            {
+                var result=await connection.QueryAsync<Order>(query, new {Id=id});
+                return result.FirstOrDefault();
             }
         }
 
@@ -46,9 +67,38 @@ namespace EcommerceProject.Repository
             }
         }
 
-        public Task<long> UpdateOrdre(Order order)
+        public async Task<long> UpdateOrderStatuss(UpdateOrderStatus updateordstatus)
         {
-            throw new NotImplementedException();
+            var query = @"Update tblOrder Set OrderStatus=@OrderStatus where Id=@Id";
+
+            using(var connection=context.CreateConnection())
+            {
+
+                var result = await connection.ExecuteAsync(query, updateordstatus);
+
+                return result;
+            }
+        }
+
+        public async Task<long> UpdateOrdre(Order order)
+        {
+            order.ModifiedDate = DateTime.Now;  
+            var query = @"update tblOrder set	CustomerId=@CustomerId,ProductId=@ProductId,TotalAmmount=@TotalAmmount,
+
+                       OrderStatus=@OrderStatus,BillingAddress=@BillingAddress,ShippingAddress=@ShippingAddress,
+
+                       CreatedBy=@CreatedBy,CreatedDate=@CreatedDate,ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,
+
+                       IsDeleted=@IsDeleted,Quantity=@Quantity,MobileNo=@MobileNo where Id=@Id";
+
+            using(var connection=context.CreateConnection())
+            {
+
+                var result=await connection.ExecuteAsync(query,order);
+
+                return result;  
+
+            }
         }
     }
 }

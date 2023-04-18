@@ -1,0 +1,84 @@
+﻿@model IEnumerable<EcommerceProject.Models.GetOrder>
+
+@{
+    ViewData["Title"] = "GetAllOrders";
+}
+
+<h1>GetAllOrders</h1>
+<br />
+<br />
+
+<div class="container-fluid">
+<div class="sales-boxes">
+    <div class="recent-sales box">
+        <div class="title text-center mb-3">All Orders</div>
+        <div class="sales-details">       
+            <table class="table table-striped table-hover">
+             
+                <thead>
+                    <tr>
+                        <th>
+                                @Html.DisplayNameFor(model => model.SrNo)
+                        </th>
+                        <th>
+                                @Html.DisplayNameFor(model => model.ProductName)
+                        </th>
+                        <th>
+                                @Html.DisplayNameFor(model => model.OrderStatus)
+                        </th>
+                        <th>
+                                @Html.DisplayNameFor(model => model.Quantity)
+                        </th>
+                        <th>
+                                Oreder Date
+                        </th>
+                        <th>
+                                @Html.DisplayNameFor(model => model.TotalAmmount)
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+               
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SrNo)
+                            </td>
+                            <td class="">
+                                @Html.DisplayFor(modelItem => item.ProductName)
+                            </td>
+
+                            <td class="">
+                                @Html.DisplayFor(modelItem => item.OrderStatus)
+                            </td>
+                            <td class="">
+                                @Html.DisplayFor(modelItem => item.Quantity)
+                            </td>
+
+                            <td class="">
+                                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                            </td>
+                            <td class="">
+                                @Html.DisplayFor(modelItem => item.TotalAmmount)
+                            </td>
+
+                            <td>
+                                    @Html.ActionLink("", "UpdateOrder", new {  id=item.Id},new{@class="btn fa fa-edit",style="font-size:40px;color:DodgerBlue"})
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+
+        </div>
+
+    </div>
+</div>
+</div>

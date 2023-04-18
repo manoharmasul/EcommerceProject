@@ -4,18 +4,20 @@
     ViewData["Title"] = "GetproductByType";
 }
 
-
+<h5 class="text-center">Shop Now</h5>
 @{
-
-    <div class="row">
+    <br />
+    <br />
+    <div class="row mt-3">
         <div class="col-4">
 
             <form asp-controller="Product" asp-action="GetproductBySearchText" class="mb-5 ms-5">
-           
+        
                       <label for="SearchText" class="">Search : </label>
-                      <input class="" type="text" id="SearchText" name="SearchText" placeholder="Enter Search Text">                    
+                     
+                      <input class="form-control mt-3" type="text" id="SearchText" name="SearchText" placeholder="Enter Search Text">                    
 
-                      <button type="submit" class="btn btn-primary ">Search</button>
+                      <button type="submit" class="btn btn-primary mt-3">Search</button>
         
             </form>
 
@@ -40,8 +42,8 @@
 
         <hr />
         <div class="row">
-            <div class="col-2"></div>
-            <div class="col-2">
+            <div class="col-1"></div>
+            <div class="col-3">
                 <img src="@imgs" alt="book images" class="mt-2 mb-2 ms-5 x-5" width="150" height="200">
             </div>
             <div class="col-4">
@@ -51,7 +53,7 @@
                     <li>@d2</li>
                     <li>@d3</li>
                 </ul>
-                <span class="badge bg-warning text-dark">  <h-5><strong>Rs</strong> : @item.Price -/ </h-5> </span>
+                <span class="badge bg-warning text-dark">  <h-5><strong>Rs</strong> : @item.SellingPrice -/ </h-5> </span>
             </div>
             <div class="col-3">
 

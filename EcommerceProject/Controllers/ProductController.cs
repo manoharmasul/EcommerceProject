@@ -19,6 +19,12 @@ namespace EcommerceProject.Controllers
 
             return View(product);
         }
+        public async Task<ActionResult> OrderContSales()
+        {
+            var product = await productAsync.ProductsOrderCount();
+
+            return View(product);
+        }
         public async Task<ActionResult> GetproductByType(string category)
         {
 

@@ -4,12 +4,14 @@
     ViewData["Title"] = "AddNewProduct";
 }
 <div class="container-fuild">
-
+    <br />
+    <br />
+    <br />
     <div class="row">
 
-        <div class="col-4"></div>
+        <div class="col-3"></div>
 
-        <div class="col-4 border border-5 mt-5">
+        <div class="col-6 border border-5 mt-5">
 
             <form asp-action="AddNewProduct">
                 <div class="form-control">
@@ -20,8 +22,13 @@
                 </div>
 
                 <div class="form-control">
-                    <label asp-for="Price" class="control-label"></label>
-                    <input asp-for="Price" class="form-control" placeholder="enter your price"/>
+                    <label asp-for="SellingPrice" class="control-label"></label>
+                    <input asp-for="SellingPrice" class="form-control" placeholder="enter your price" />
+                </div>
+
+                <div class="form-control">
+                    <label asp-for="BuyPrice" class="control-label"></label>
+                    <input asp-for="BuyPrice" class="form-control" placeholder="enter your price" />
                 </div>
 
                 <div class="form-control">
@@ -58,7 +65,7 @@
 
         </div>
         <input type="hidden" id="controlid" name="controlid" value="1">
-        <div class="col-4"></div>
+        <div class="col-3"></div>
 
     </div>
     <!-- The Modal -->

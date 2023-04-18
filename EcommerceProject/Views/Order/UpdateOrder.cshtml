@@ -1,0 +1,115 @@
+﻿@model EcommerceProject.Models.Order
+
+@{
+    ViewData["Title"] = "UpdateOrder";
+}
+
+<h1>UpdateOrder</h1>
+
+<h4>Order</h4>
+<hr />
+<div class="container-fuild">
+    <br />
+    <br />
+    <br />
+    <div class="row">
+
+        <div class="col-3"></div>
+
+        <div class="col-6 border border-5 mt-5">
+            <br />
+            <br />         
+        <form asp-action="UpdateOrder">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+               
+                <input asp-for="Id" class="form-control" hidden />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+              
+                    <input asp-for="CustomerId" class="form-control" hidden />
+                <span asp-validation-for="CustomerId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+             
+                    <input asp-for="ProductId" class="form-control" hidden />
+                <span asp-validation-for="ProductId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalAmmount" class="control-label"></label>
+                <input asp-for="TotalAmmount" class="form-control" />
+                <span asp-validation-for="TotalAmmount" class="text-danger"></span>
+            </div>
+                <div class="form-group mt-2 mb-2">
+                    <label for="CategoryId">Change Status:</label>
+                    <select class="form-select form-control" name="OrderStatus">
+                        <option value="@Model.OrderStatus">@Model.OrderStatus</option>
+                        <option value="Ready For Dispatched">Ready For Dispatched</option>
+                        <option value="Dispatched">Dispatched</option>
+                        <option value="Delivered">Delivered</option>
+                    </select>
+                </div>
+
+            <div class="form-group">
+                <label asp-for="BillingAddress" class="control-label"></label>
+                <input asp-for="BillingAddress" class="form-control" />
+                <span asp-validation-for="BillingAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShippingAddress" class="control-label"></label>
+                <input asp-for="ShippingAddress" class="form-control" />
+                <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MobileNo" class="control-label"></label>
+                <input asp-for="MobileNo" class="form-control" />
+                <span asp-validation-for="MobileNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+              
+                    <input asp-for="createdBy" class="form-control" hidden/>
+                <span asp-validation-for="createdBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+              
+                    <input asp-for="modifiedBy" class="form-control" hidden/>
+                <span asp-validation-for="modifiedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <input asp-for="CreatedDate" class="form-control" hidden/>
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+              
+                <input asp-for="ModifiedDate" class="form-control" hidden/>
+                <span asp-validation-for="ModifiedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+            <br />
+            <br />
+    </div>
+</div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

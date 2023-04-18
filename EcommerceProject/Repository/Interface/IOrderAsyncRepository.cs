@@ -6,7 +6,10 @@ namespace EcommerceProject.Repository.Interface
     {
         Task<long> OrdreItem(Order order);
         Task<long> UpdateOrdre(Order order);
+        Task<long> UpdateOrderStatuss(UpdateOrderStatus updateordstatus);
         Task<List<GetOrder>> GetMyOrders(long userid);
-        Task<List<Order>> GetAllOrders();
+        Task<List<GetOrder>> GetAllOrders();
+        Task<Order> GetOrderById(long id);
+
     }
 }

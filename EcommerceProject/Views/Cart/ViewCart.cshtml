@@ -7,6 +7,8 @@
 <h4 class="text-center">ViewCart</h4>
 
 <hr />
+<br />
+<br />
 @foreach (var item in Model)
 {
     string descrip = item.Description;
@@ -32,7 +34,7 @@
                 <li>@d2</li>
                 <li>@d3</li>
             </ul>
-            <span class="badge bg-warning text-dark">  <h-5><strong>Rs</strong> : @item.Price -/ </h-5> </span>
+            <span class="badge bg-warning text-dark">  <h-5><strong>Rs</strong> : @item.SellingPrice -/ </h-5> </span>
         </div>
         <div class="col-3">
 
