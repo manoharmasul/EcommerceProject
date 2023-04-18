@@ -583,8 +583,8 @@ nav .profile-details i{
                         
                         <div class="profile-details">
                             <!--<img src="images/profile.jpg" alt="">-->
-                    <span class="admin_name"> <i class="fa fa-user-circle" aria-hidden="true"></i> Prem Shahi</span>                      
-                        </div>
+                    <span class="admin_name"> <i class="fa fa-user-circle" aria-hidden="true"></i>    @Context.Request.HttpContext.Session.GetString("userName")</span>
+                </div>
                     </nav>
 
 
@@ -610,7 +610,7 @@ nav .profile-details i{
                          <script>
                            let sidebar = document.querySelector(".sidebar");
                         let sidebarBtn = document.querySelector(".sidebarBtn");
-                        sidebarBtn.onclick = function() {
+                              sidebarBtn.onclick = function() {
                           sidebar.classList.toggle("active");
                           if(sidebar.classList.contains("active")){
                           sidebarBtn.classList.replace("bx-menu" ,"bx-menu-alt-right");
@@ -629,7 +629,7 @@ nav .profile-details i{
             </div>
             <ul class="nav-links">
                 <li>
-                    <a class="" asp-area="" asp-controller="Product" asp-action="OrderContSales">
+                    <a class="" asp-area="" asp-controller="Product" asp-action="Index">
                         <i class="fa fa-home" style="font-size:24px"></i>
                         <span class="links_name">Home</span>
                     </a>
@@ -700,7 +700,7 @@ nav .profile-details i{
 
                 <div class="profile-details">
                     <!--<img src="images/profile.jpg" alt="">-->
-                    <span class="admin_name"> <i class="fa fa-user-circle" aria-hidden="true"></i> Prem Shahi</span>
+                    <span class="admin_name"> <i class="fa fa-user-circle" aria-hidden="true"></i>    @Context.Request.HttpContext.Session.GetString("userName")</span>
                 </div>
             </nav>
 

@@ -95,7 +95,7 @@ namespace EcommerceProject.Controllers
                     if (user.Role == "Admin")
                         return RedirectToAction("OrderContSales", "Product");
                     else
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Product");
                 }
                 else
                     ViewBag.num = 1;
