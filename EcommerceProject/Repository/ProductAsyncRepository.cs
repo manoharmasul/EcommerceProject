@@ -17,7 +17,7 @@ namespace EcommerceProject.Repository
         {
             //Id,ProductName,ImageUrl,Price,Description,Specification,TypeId,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,IsDeleted
 
-            var query = @"insert into tblProducts (ProductName,ImageUrl,SellingPrice,BuyPrice,Description,Specification,TypeId,CreatedDate,IsDeleted) values(@ProductName,@ImageUrl,@SellingPrice,@,@Description,@Specification,@TypeId,GetDate(),0)";
+            var query = @"insert into tblProducts (ProductName,ImageUrl,SellingPrice,BuyPrice,Description,Specification,TypeId,CreatedDate,IsDeleted) values(@ProductName,@ImageUrl,@SellingPrice,@BuyPrice,@Description,@Specification,@TypeId,GetDate(),0)";
             using(var connection=context.CreateConnection())
             {
                 var result=await connection.ExecuteAsync(query,product);

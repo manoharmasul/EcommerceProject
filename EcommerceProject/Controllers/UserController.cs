@@ -50,6 +50,29 @@ namespace EcommerceProject.Controllers
             }
         }
 
+        public async Task<ActionResult> AddEmployee()
+        {
+            var emp = await userasynrepo.GetAllUsersAdd();
+            return View(emp);
+        }
+
+        // POST: UserController/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddEmployee(UserRegistrationModel userregistration)
+        {
+            try
+            {
+                var result = await userasynrepo.AddEmployee(userregistration);
+
+                return RedirectToAction(nameof(SetPassword), new { result });
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
         public ActionResult SetPassword(long result)
         {
             ViewBag.id = result;
@@ -67,7 +90,7 @@ namespace EcommerceProject.Controllers
 
                 var resultt = await userasynrepo.SetPassword(userPassword);
 
-                return RedirectToAction(nameof(Login));
+                return RedirectToAction("Index","Product");
             }
             catch
             {

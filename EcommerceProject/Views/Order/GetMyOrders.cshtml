@@ -47,14 +47,40 @@
                                         <li class="mb-3 me-1"><strong>Quantity : </strong> 1</li>
                                         <li class="mb-3 me-1"><strong>Total_Ammount : </strong>@item.TotalAmmount</li>                                                                                   </span>
                                 </ul>
-                                <button class="myBtn btn btn-outline-warning mb-3 ms-3">see more</button>
+
+                           @*Ready For Dispatched,Dispatched,Delivered*@
+                                @if(item.OrderStatus!="Dispatched" || item.OrderStatus=="Delivered"@* || item.OrderStatus=="Ready For Dispatched"*@)
+                                {
+                                      <form asp-action="UpdateOrderByCustomer" class="mb-3 ms-3" style="float:left">
+                                      <input name="Id" value="@item.Id" hidden>                  
+                                       <button type="submit" value="UpdateOrderByCustomer" class="btn btn-outline-primary" disabled>Recived</button>
+                                    </form>
+                                    
+                                }
+                                else if(item.OrderStatus=="Dispatched")
+                                {
+
+                                    <form asp-action="UpdateOrderByCustomer" class="mb-3 ms-3" style="float:left">
+                                      <input name="Id" value="@item.Id" hidden>                  
+                                       <button type="submit" value="UpdateOrderByCustomer" class="btn btn-outline-primary">Recived</button>
+                                    </form>
+                                    
+                                }
+                                else
+                                {
+
+                                }
+                              
+                                <button class="myBtn btn btn-outline-warning mb-3 ms-3 me-5" >see more</button>
+                               </div>
                             </div>
 
                         </div>
                     </div>
                 </div>
                 <div class="col-2"></div>
-            </div>
+          
+           
 
         }
     
@@ -92,6 +118,4 @@
         }
     </script>
 }
-
- }
 

@@ -139,6 +139,27 @@ namespace EcommerceProject.Controllers
                 return View();
             }
         }
+        // POST: OrderController/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> UpdateOrderByCustomer(long Id)
+        {
+            try
+            {
+
+                var uId = HttpContext.Session.GetString("userId");
+                long UserId = Int32.Parse(uId);
+               
+
+                var ord = await orderasyncrepo.UpdateOrdreByCustomer(Id, UserId);
+
+                return RedirectToAction(nameof(GetAllOrders));
+            }
+            catch
+            {
+                return View();
+            }
+        }
 
         // GET: OrderController/Delete/5
         public ActionResult Delete(int id)

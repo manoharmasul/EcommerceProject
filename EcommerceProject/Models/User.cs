@@ -23,6 +23,13 @@
         public string Password { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Role { get; set; }
+        public long RoleId { get; set; }
+        public List<UserTypes> userTypes { get; set; }
+    }
+    public class UserTypes
+    {
+        public long RoleId { get; set; }
+        public string RoleType { get; set; }
     }
     public class UserLogInModel
     {

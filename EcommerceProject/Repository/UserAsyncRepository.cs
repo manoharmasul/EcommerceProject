@@ -103,5 +103,71 @@ namespace EcommerceProject.Repository
             }
 
         }
+
+        public async Task<long> AddEmployee(UserRegistrationModel userregistration)
+        {
+            var query = "insert into tblUser(UserName,FirstName,LastName,EmailId,MobileNo,DateOfBirth,Gender,CreatedDate,IsDeleted,[Role],RoleId) values(@UserName,@FirstName,@LastName,@EmailId,@MobileNo,@DateOfBirth,@Gender,GetDate(),0,'Customer',@RoleId);SELECT CAST(SCOPE_IDENTITY() as int)";
+           
+
+            using (var connection = context.CreateConnection())
+            {
+                userregistration.Role = "Customer";
+
+                var checkmobile = await connection.QueryFirstOrDefaultAsync(@"select * from tblUser Where IsDeleted=0 and MobileNo=@MobileNo", new { MobileNo = userregistration.MobileNo });
+                if (checkmobile != null)
+                {
+                    return -1;//Mobile No Already Present
+                }
+                var checkemail = await connection.QueryFirstOrDefaultAsync(@"select * from tblUser where IsDeleted=0 and EmailId=@EmailId", new { EmailId = userregistration.EmailId });
+                if (checkemail != null)
+                {
+                    return -2; //Email Id Already Present
+                }
+                string ss = userregistration.FirstName + userregistration.LastName;
+                var checkuname = await connection.QueryFirstOrDefaultAsync
+                    (
+                    @"select * from tblUser where IsDeleted=0 and UserName=@UserName",
+                   new { UserName = ss });
+                if (checkuname == null)
+                {
+                    userregistration.UserName = userregistration.FirstName + userregistration.LastName;
+                }
+                if (checkuname != null)
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        Random rnd = new Random();
+                        int xx = rnd.Next(999);
+                        ss += xx;
+                        var checkagain = await connection.QueryFirstOrDefaultAsync
+                           (@"select * from tblUser where UserName=@UserName and IsDeleted=0", new { UserName = ss });
+                        if (checkagain == null)
+                        {
+                            userregistration.UserName = ss;
+                            break;
+                        }
+
+                    }
+
+                }
+               
+                var result = await connection.QuerySingleAsync<long>(query, userregistration);
+               
+                return result;
+
+            }
+        }
+
+        public async Task<UserRegistrationModel> GetAllUsersAdd()
+        {
+            UserRegistrationModel urm = new UserRegistrationModel();
+            var query = @"select Id as RoleId,Type as RoleType from tblUserType";
+            using(var connection=context.CreateConnection())
+            {
+                var result = await connection.QueryAsync<UserTypes>(query);
+                urm.userTypes = result.ToList();
+                return urm;
+            }
+        }
     }
 }
