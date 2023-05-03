@@ -73,6 +73,30 @@ namespace EcommerceProject.Controllers
             }
         }
 
+        public async Task<ActionResult> UpdateWalletBalance()
+        {
+            var Id = HttpContext.Session.GetString("userId");               
+            var emp = await userasynrepo.GetUserById(Int32.Parse(Id));
+            return View(emp);
+        }
+
+        // POST: UserController/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> UpdateWalletBalance(UserRegistrationModel userregistration)
+        {
+            try
+            {
+                var result = await userasynrepo.AddWalletBalance(userregistration);
+
+                return RedirectToAction(nameof(SetPassword), new { result });
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
         public ActionResult SetPassword(long result)
         {
             ViewBag.id = result;

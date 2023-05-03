@@ -10,6 +10,7 @@
         public string MobileNo { get; set; }
         public string Password { get; set; }
         public string Role { get; set; }
+        public double WalletBalance { get; set; }
     }
     public class UserRegistrationModel
     {
@@ -24,6 +25,7 @@
         public DateTime DateOfBirth { get; set; }
         public string Role { get; set; }
         public long RoleId { get; set; }
+        public double WalletBalance { get; set; }
         public List<UserTypes> userTypes { get; set; }
     }
     public class UserTypes
@@ -41,5 +43,10 @@
         public long Id { get; set; }
         public string Password { get; set; }
         public string ConfirmedPassword { get; set; }
+    }
+    public class WalletBalanceClass
+    {
+        public long Id { get; set; }
+        public double WalletBalance { get; set; }
     }
 }

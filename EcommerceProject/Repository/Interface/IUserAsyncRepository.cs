@@ -12,6 +12,8 @@ namespace EcommerceProject.Repository.Interface
         Task<UserRegistrationModel> GetAllUsersAdd();
         Task<UserRegistrationModel> GetUserById(long id);
         Task<User> UserLogIn(UserLogInModel usermodel);
+        Task<long> AddWalletBalance(UserRegistrationModel addwalletbalace);
+        
 
     }
 }

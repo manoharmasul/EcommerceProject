@@ -536,12 +536,12 @@ nav .profile-details i{
                                 <span class="links_name">Stock</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#">
-                                <i class='bx bx-book-alt'></i>
-                                <span class="links_name">Total order</span>
-                            </a>
-                        </li>
+                      <li>
+                    <a asp-action="UpdateWalletbalance" asp-controller="User">
+                           <i class='bx bx-wallet'></i>
+                           <span class="links_name">My Wallet</span>
+                         </a>
+                      </li>
                         <li>
                             <a class="" asp-area="" asp-controller="User" asp-action="Index">
                                 <i class='bx bx-user'></i>
@@ -555,10 +555,13 @@ nav .profile-details i{
                             </a>
                         </li>
                         <li>
-                            <a href="#">
-                                <i class='bx bx-heart'></i>
-                                <span class="links_name">Favrorites</span>
+                             <a class="" asp-area="" asp-controller="Cart" asp-action="ViewCart">
+                   
+                            <i class='bx bx-cart'></i>
+                            <span class="links_name">My Cart</span>
+                   
                             </a>
+                           
                         </li>
                         <li>
                             <a href="#">

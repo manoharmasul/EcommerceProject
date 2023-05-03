@@ -38,9 +38,15 @@ namespace EcommerceProject.Repository
             }
         }
 
-        public Task<UserRegistrationModel> GetUserById(long id)
+        public async Task<UserRegistrationModel> GetUserById(long id)
         {
-            throw new NotImplementedException();
+            var query = @"select * from tblUser Where Id=@Id";
+            using(var connection=context.CreateConnection())
+            {
+                var result = await connection.QueryFirstOrDefaultAsync<UserRegistrationModel>(query, new { Id = id });
+                
+                return result;
+            }
         }
 
         public async Task<long> SetPassword(UserPasswordModel userpassoword)
@@ -169,5 +175,17 @@ namespace EcommerceProject.Repository
                 return urm;
             }
         }
+
+        public async Task<long> AddWalletBalance(UserRegistrationModel addwalletbalace)
+        {
+            var query = @"Update tblUser set WalletBalance=@WalletBalance where Id=@Id";
+            using (var connection = context.CreateConnection())
+            {
+                var result = await connection.ExecuteAsync(query, addwalletbalace);
+                return result;
+            }
+        }
+
+      
     }
 }
