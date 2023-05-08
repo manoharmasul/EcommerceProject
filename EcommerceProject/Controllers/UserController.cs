@@ -8,10 +8,13 @@ namespace EcommerceProject.Controllers
 {
     public class UserController : Controller
     {
+        AttendanceModel at = new AttendanceModel();
+        private readonly IAttendaceRepository attendanceRepo;
         private readonly IUserAsyncRepository userasynrepo;
-        public UserController(IUserAsyncRepository userasynrepo)
+        public UserController(IUserAsyncRepository userasynrepo, IAttendaceRepository attendanceRepo)
         {
             this.userasynrepo = userasynrepo;
+            this.attendanceRepo = attendanceRepo;
         }
 
          // GET: UserController
@@ -140,9 +143,20 @@ namespace EcommerceProject.Controllers
                     ViewBag.user = user.UserName;
 
                     if (user.Role == "Admin")
+                    {
+
+                        at.EmpId = user.Id;
+                        attendanceRepo.CheckInOut(at);
+
                         return RedirectToAction("OrderContSales", "Product");
+                    }
                     else
+                    {
+                        at.EmpId = user.Id;
+                        attendanceRepo.CheckInOut(at);
+
                         return RedirectToAction("Index", "Product");
+                    }
                 }
                 else
                     ViewBag.num = 1;
@@ -157,7 +171,11 @@ namespace EcommerceProject.Controllers
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
+            var uId = HttpContext.Session.GetString("userId");
+            at.EmpId = Int32.Parse(uId);
+            attendanceRepo.CheckInOut(at);
+            HttpContext.Session.Clear();    
+           
             return RedirectToAction("LogIn");
         }
 

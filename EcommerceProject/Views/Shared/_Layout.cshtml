@@ -530,12 +530,13 @@ nav .profile-details i{
                                 <span class="links_name">Analytics</span>
                             </a>
                         </li>
-                        <li>
+                      @*<li>
                             <a href="#">
                                 <i class='bx bx-coin-stack'></i>
                                 <span class="links_name">Stock</span>
                             </a>
                         </li>
+                        *@ 
                       <li>
                     <a asp-action="UpdateWalletbalance" asp-controller="User">
                            <i class='bx bx-wallet'></i>
@@ -548,6 +549,12 @@ nav .profile-details i{
                                 <span class="links_name">Team</span>
                             </a>
                         </li>
+                <li>
+                    <a class="" asp-area="" asp-controller="Attendance" asp-action="GetAttendanceRecord">
+                       <i class="fa fa-users" aria-hidden="true"></i>
+                        <span class="links_name">Attendance</span>
+                    </a>
+                </li>
                         <li>
                             <a href="#">
                                 <i class='bx bx-message'></i>

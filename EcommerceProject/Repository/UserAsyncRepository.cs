@@ -61,11 +61,12 @@ namespace EcommerceProject.Repository
 
         public async Task<long> UserRegistration(UserRegistrationModel userregistration)
         {
-            var query = "insert into tblUser(UserName,FirstName,LastName,EmailId,MobileNo,DateOfBirth,Gender,CreatedDate,IsDeleted,[Role],RId) values(@UserName,@FirstName,@LastName,@EmailId,@MobileNo,@DateOfBirth,@Gender,GetDate(),0,'Customer',2);SELECT CAST(SCOPE_IDENTITY() as int)";
+            var query = "insert into tblUser(UserName,FirstName,LastName,EmailId,MobileNo,DateOfBirth,Gender,CreatedDate,IsDeleted,[Role],RId,RoleId) values(@UserName,@FirstName,@LastName,@EmailId,@MobileNo,@DateOfBirth,@Gender,GetDate(),0,'Customer',2,@RoleId);SELECT CAST(SCOPE_IDENTITY() as int)";
 
             using (var connection = context.CreateConnection())
             {
                 userregistration.Role = "Customer";
+                userregistration.RoleId = 1; 
 
                 var checkmobile = await connection.QueryFirstOrDefaultAsync(@"select * from tblUser Where IsDeleted=0 and MobileNo=@MobileNo", new { MobileNo = userregistration.MobileNo });
                 if (checkmobile != null)

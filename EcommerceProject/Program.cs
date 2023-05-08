@@ -12,6 +12,7 @@ builder.Services.AddScoped<IUserAsyncRepository, UserAsyncRepository>();
 builder.Services.AddScoped<IProductAsyncRepository, ProductAsyncRepository>();
 builder.Services.AddScoped<ICartAsyncRepository, CartAsyncRepository>();
 builder.Services.AddScoped<IOrderAsyncRepository, OrderAsycRepository>();
+builder.Services.AddScoped<IAttendaceRepository, AttendanceRepository>();
 
 builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromHours(1);
