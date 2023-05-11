@@ -150,9 +150,15 @@ namespace EcommerceProject.Controllers
                 var uId = HttpContext.Session.GetString("userId");
                 long UserId = Int32.Parse(uId);
                
+                
 
                 var ord = await orderasyncrepo.UpdateOrdreByCustomer(Id, UserId);
 
+                var roleCheck = HttpContext.Session.GetString("userRole");
+                if(roleCheck!="Admin")
+                {
+                    return RedirectToAction(nameof(GetMyOrders));
+                }
                 return RedirectToAction(nameof(GetAllOrders));
             }
             catch

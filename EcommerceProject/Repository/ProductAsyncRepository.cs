@@ -117,16 +117,17 @@ namespace EcommerceProject.Repository
 
             var queryOrderPending = @"select Count(*) from tblOrder where IsDeleted=0 and OrderStatus='Pending'";
 
-            var querytotatSell = @"select Sum(TotalAmmount) from tblOrder where IsDeleted=0";
+            var querytotatSell = @"select IsNull(Sum(TotalAmmount),0) from tblOrder where IsDeleted=0";
 
-            var querytotatBuyprice = @"select Sum(p.BuyPrice) from tblOrder o 
-                                    inner join tblProducts p on o.ProductId=p.Id
-                                    where o.IsDeleted=0";
-            var querytotalSellprice = @"select Sum(p.SellingPrice) from tblOrder o 
+            var querytotatBuyprice = @"select IsNUll(Sum(p.BuyPrice),0) from tblOrder o 
                                     inner join tblProducts p on o.ProductId=p.Id
                                     where o.IsDeleted=0";
 
-            var queryToDaysOrders = @"select Count(*) from tblOrder where IsDeleted=0 And CONVERT(DATE,CreatedDate) =  CONVERT(DATE, GETDATE()) ";
+            var querytotalSellprice = @"select IsNull(Sum(p.SellingPrice),0) from tblOrder o 
+                                    inner join tblProducts p on o.ProductId=p.Id
+                                    where o.IsDeleted=0";
+
+            var queryToDaysOrders = @"select Count(*) from tblOrder where IsDeleted=0 And CONVERT(DATE,CreatedDate) =  CONVERT(DATE, GETDATE())";
             var querytopselingproduct = @"select p.ProductName,Count(o.Id) as NoOfSales from tblOrder o 
                                      inner join tblProducts p on o.ProductId=p.Id group by p.ProductName order by NoOfSales desc";
 

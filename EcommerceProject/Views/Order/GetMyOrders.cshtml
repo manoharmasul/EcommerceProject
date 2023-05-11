@@ -35,7 +35,7 @@
                             <div class="col-2">
                                 <img src="@str[0]" width="100%" height="150" class="col ml-auto">
                             </div>
-                            <div class="col-6">
+                            <div class="col-5">
                                 <ul clas="ms-0">
                                     <li class="mb-3 me-1"><strong>Shipping_Address : </strong>@item.ShippingAddress</li>
                                     <li class="mb-3 me-1"><strong>Order_Statusy :</strong>@item.OrderStatus</li>
@@ -48,21 +48,13 @@
                                         <li class="mb-3 me-1"><strong>Total_Ammount : </strong>@item.TotalAmmount</li>                                                                                   </span>
                                 </ul>
 
-                           @*Ready For Dispatched,Dispatched,Delivered*@
-                                @if(item.OrderStatus!="Dispatched" || item.OrderStatus=="Delivered"@* || item.OrderStatus=="Ready For Dispatched"*@)
-                                {
-                                      <form asp-action="UpdateOrderByCustomer" class="mb-3 ms-3" style="float:left">
-                                      <input name="Id" value="@item.Id" hidden>                  
-                                       <button type="submit" value="UpdateOrderByCustomer" class="btn btn-outline-primary" disabled>Recived</button>
-                                    </form>
-                                    
-                                }
-                                else if(item.OrderStatus=="Dispatched")
+                               @*Ready For Dispatched,Dispatched,Delivered*@
+                                @if(item.OrderStatus!="Delivered")
                                 {
 
                                     <form asp-action="UpdateOrderByCustomer" class="mb-3 ms-3" style="float:left">
                                       <input name="Id" value="@item.Id" hidden>                  
-                                       <button type="submit" value="UpdateOrderByCustomer" class="btn btn-outline-primary">Recived</button>
+                                       <button type="submit" value="UpdateOrderByCustomer" class="youBtn btn btn-outline-primary">Recived</button>
                                     </form>
                                     
                                 }
@@ -71,8 +63,9 @@
 
                                 }
                               
-                                <button class="myBtn btn btn-outline-warning mb-3 ms-3 me-5" >see more</button>
+                                <button class="myBtn btn btn-outline-warning mb-3 ms-3 me-5" style="float:right">see more</button>
                                </div>
+                        <div class="col-1"></div>
                             </div>
 
                         </div>

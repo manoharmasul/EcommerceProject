@@ -116,8 +116,13 @@ namespace EcommerceProject.Controllers
             {
 
                 var resultt = await userasynrepo.SetPassword(userPassword);
+                var uId = HttpContext.Session.GetString("userId");
+                if(uId==null)
+                {
+                    return RedirectToAction(nameof(Login));
+                }
 
-                return RedirectToAction("Index","Product");
+                return RedirectToAction(nameof(Index));
             }
             catch
             {

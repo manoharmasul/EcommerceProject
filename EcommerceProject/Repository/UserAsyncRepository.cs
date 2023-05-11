@@ -28,12 +28,20 @@ namespace EcommerceProject.Repository
             }
         }
 
-        public async Task<User> UserLogIn(UserLogInModel usermodel)
+        public async Task<GetUserLogInModel> UserLogIn(UserLogInModel usermodel)
         {
-            var query = @"select * from tblUser where (UserName=@UserName or EmailId=@EmailId) and Password=@Password and IsDeleted=0";
+            var query = @"select U.Id as Id,U.UserName,U.FirstName,U.LastName,	
+                        U.EmailId,U.MobileNo,
+                        U.Password,U.CreatedBy,	
+                        U.CreatedDate,U.ModifiedBy,U.ModifiedDate,U.IsDeleted,U.DateOfBirth,
+                        U.Gender,U.RoleId as RoleId,	
+                        U.WalletBalance,UT.Role
+                        from tblUser U inner join tblUserType UT on U.RoleId=UT.Id
+                        where (UserName=@UserName or EmailId=@UserName) 
+                        and Password=@Password and IsDeleted=0";
             using (var connection = context.CreateConnection())
             {
-                var result = await connection.QueryAsync<User>(query, new {UserName=usermodel.UserName,Password=usermodel.Password,EmailId=usermodel.UserName});
+                var result = await connection.QueryAsync<GetUserLogInModel>(query, new {UserName=usermodel.UserName,Password=usermodel.Password,EmailId=usermodel.UserName});
                 return result.FirstOrDefault();
             }
         }
@@ -61,12 +69,12 @@ namespace EcommerceProject.Repository
 
         public async Task<long> UserRegistration(UserRegistrationModel userregistration)
         {
-            var query = "insert into tblUser(UserName,FirstName,LastName,EmailId,MobileNo,DateOfBirth,Gender,CreatedDate,IsDeleted,[Role],RId,RoleId) values(@UserName,@FirstName,@LastName,@EmailId,@MobileNo,@DateOfBirth,@Gender,GetDate(),0,'Customer',2,@RoleId);SELECT CAST(SCOPE_IDENTITY() as int)";
+            var query = "insert into tblUser(UserName,FirstName,LastName,EmailId,MobileNo,DateOfBirth,Gender,CreatedDate,IsDeleted,RoleId) values(@UserName,@FirstName,@LastName,@EmailId,@MobileNo,@DateOfBirth,@Gender,GetDate(),0,@RoleId);SELECT CAST(SCOPE_IDENTITY() as int)";
 
             using (var connection = context.CreateConnection())
             {
-                userregistration.Role = "Customer";
-                userregistration.RoleId = 1; 
+               
+                userregistration.RoleId = 5; 
 
                 var checkmobile = await connection.QueryFirstOrDefaultAsync(@"select * from tblUser Where IsDeleted=0 and MobileNo=@MobileNo", new { MobileNo = userregistration.MobileNo });
                 if (checkmobile != null)
@@ -113,12 +121,12 @@ namespace EcommerceProject.Repository
 
         public async Task<long> AddEmployee(UserRegistrationModel userregistration)
         {
-            var query = "insert into tblUser(UserName,FirstName,LastName,EmailId,MobileNo,DateOfBirth,Gender,CreatedDate,IsDeleted,[Role],RoleId) values(@UserName,@FirstName,@LastName,@EmailId,@MobileNo,@DateOfBirth,@Gender,GetDate(),0,'Customer',@RoleId);SELECT CAST(SCOPE_IDENTITY() as int)";
+            var query = "insert into tblUser(UserName,FirstName,LastName,EmailId,MobileNo,DateOfBirth,Gender,CreatedDate,IsDeleted,RoleId) values(@UserName,@FirstName,@LastName,@EmailId,@MobileNo,@DateOfBirth,@Gender,GetDate(),0,@RoleId);SELECT CAST(SCOPE_IDENTITY() as int)";
            
 
             using (var connection = context.CreateConnection())
             {
-                userregistration.Role = "Customer";
+                userregistration.RoleId = userregistration.RoleId;
 
                 var checkmobile = await connection.QueryFirstOrDefaultAsync(@"select * from tblUser Where IsDeleted=0 and MobileNo=@MobileNo", new { MobileNo = userregistration.MobileNo });
                 if (checkmobile != null)
@@ -168,7 +176,7 @@ namespace EcommerceProject.Repository
         public async Task<UserRegistrationModel> GetAllUsersAdd()
         {
             UserRegistrationModel urm = new UserRegistrationModel();
-            var query = @"select Id as RoleId,Type as RoleType from tblUserType";
+            var query = @"select Id as RoleId,Role as RoleType from tblUserType";
             using(var connection=context.CreateConnection())
             {
                 var result = await connection.QueryAsync<UserTypes>(query);

@@ -59,35 +59,25 @@ namespace EcommerceProject.Repository
         public async Task<List<GetAttendanceModel>> GetAllAttendancesByEmpId(string? UserName, DateTime? FromDate, DateTime? ToDate)
         {
             long EmpId = 0;
-        
-            var fDate = "";
-            var tDate = "";
-            if (FromDate==null)
-            {
-                 fDate = "";
-            }
-            else
-            {
-                fDate = FromDate.ToString();         
+    
+             if(FromDate==null)
+             {
+                    FromDate  = DateTime.ParseExact("2023-01-01 14:40:52,531", "yyyy-MM-dd HH:mm:ss,fff",
+                                       System.Globalization.CultureInfo.InvariantCulture);
              }
-            if(ToDate == null)
-            {
-                 tDate = "";
-            }
-            else
-            {
-                tDate = ToDate.ToString();
-            }
+             if(ToDate==null)
+             {
+                ToDate = DateTime.Now;
+             }
 
-            var query = @"if(@fDate='' AND @tDate='')
-                SELECT UserName,CONVERT(varchar, (sum(DATEDIFF(SECOND, intime, outtime)) / 86400))              
-                    + ':' + CONVERT(varchar, DATEADD(ss, sum(DATEDIFF(SECOND, intime, outtime)), 0), 108) as Time,cast(AttendanceDate as Date) as AttendanceDate,EmpId from tblAttendance inner join tblUser on tblAttendance.EmpId=tblUser.Id
-                where (EmpId=@EmpId or @EmpId=0) and cast(AttendanceDate as date) between Cast(DATEADD(dd, -( DAY( GetDate() ) -1 ), GetDate()) as Date) and cast(GetDate() as Date)  group by cast(AttendanceDate as date),EmpId,UserName Order by Cast(AttendanceDate as date),UserName
-                else
-              SELECT UserName,CONVERT(varchar, (sum(DATEDIFF(SECOND, intime, outtime)) / 86400))   
-                    + ':' + CONVERT(varchar, DATEADD(ss, sum(DATEDIFF(SECOND, intime, outtime)), 0), 108) as Time,cast(AttendanceDate as Date) as AttendanceDate,EmpId from tblAttendance inner join tblUser on tblAttendance.EmpId=tblUser.Id
-                where (EmpId=@EmpId or @EmpId=0) and Cast(AttendanceDate as Date) between Cast(@fDate as Date) and Cast(@tDate as Date)  group by cast(AttendanceDate as date),EmpId,UserName
-                  ";
+
+            var query = @"
+                        SELECT UserName,CONVERT(varchar, (sum(DATEDIFF(SECOND, intime, outtime)) / 86400))   
+                        + ':' + CONVERT(varchar, DATEADD(ss, sum(DATEDIFF(SECOND, intime, outtime)), 0), 108) 
+                        as Time,cast(AttendanceDate as Date) as AttendanceDate,EmpId from tblAttendance 
+                        inner join tblUser on tblAttendance.EmpId=tblUser.Id
+                        where tblUser.RoleId !=5 and (EmpId=@EmpId or @EmpId=0) and Cast(AttendanceDate as Date) between Cast(@fDate as Date) 
+                        and Cast(@tDate as Date)  group by cast(AttendanceDate as date),EmpId,UserName";
             using(var con=context.CreateConnection())
             {
 
@@ -96,7 +86,7 @@ namespace EcommerceProject.Repository
                     EmpId = await con.QuerySingleOrDefaultAsync<long>(@"select Id From tblUser where UserName=@UserName and IsDeleted=0", new { UserName = UserName });
                 }
 
-                var result = await con.QueryAsync<GetAttendanceModel>(query, new { fDate = fDate, tDate = tDate, EmpId = EmpId });
+                var result = await con.QueryAsync<GetAttendanceModel>(query, new { fDate = FromDate, tDate = ToDate, EmpId = EmpId });
                 result.ToList();
                 if (result.Count()>0)
                 {
