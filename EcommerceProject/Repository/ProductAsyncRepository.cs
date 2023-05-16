@@ -78,7 +78,7 @@ namespace EcommerceProject.Repository
 
                 return prod.ToList();
 
-            }
+            }  
 
         }
 
@@ -115,7 +115,7 @@ namespace EcommerceProject.Repository
 
             var queryOrderCount = @"Select Count(*) from tblOrder where IsDeleted=0";
 
-            var queryOrderPending = @"select Count(*) from tblOrder where IsDeleted=0 and OrderStatus='Pending'";
+            var queryOrderPending = @"select Count(*) from tblOrder where IsDeleted=0 and OrderStatusId=1";
 
             var querytotatSell = @"select IsNull(Sum(TotalAmmount),0) from tblOrder where IsDeleted=0";
 

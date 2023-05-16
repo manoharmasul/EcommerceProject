@@ -42,26 +42,33 @@
                                     <span class="dots">...</span>
                                     <span class="more" style="display:none">
                                         <li class="mb-3 me-1"><strong>Billing_Address : </strong>@item.BillingAddress</li>
-                                        <li class="mb-3 me-1"><stron>Order_Date : </stron>@item.CreatedDate</li>
+                                        <li class="mb-3 me-1"><strong>Order_Date : </strong>@item.OrderDate</li>
                                         <li class="mb-3 me-1"><strong>MobileNo : </strong>@item.MobileNo</li>
                                         <li class="mb-3 me-1"><strong>Quantity : </strong> 1</li>
                                         <li class="mb-3 me-1"><strong>Total_Ammount : </strong>@item.TotalAmmount</li>                                                                                   </span>
                                 </ul>
 
                                @*Ready For Dispatched,Dispatched,Delivered*@
-                                @if(item.OrderStatus!="Delivered")
+                            @if (item.OrderStatus == "Dispatched" )
                                 {
 
-                                    <form asp-action="UpdateOrderByCustomer" class="mb-3 ms-3" style="float:left">
-                                      <input name="Id" value="@item.Id" hidden>                  
-                                       <button type="submit" value="UpdateOrderByCustomer" class="youBtn btn btn-outline-primary">Recived</button>
+                                <form asp-action="UpdateOrderStatuss" class="mb-3 ms-3" style="float:left">
+                                      <input name="Id" value="@item.Id" hidden>
+
+                                    <button type="submit" value="UpdateOrderStatuss" class="youBtn btn btn-outline-primary" Active>Recived</button>
                                     </form>
                                     
                                 }
                                 else
                                 {
+                                <form asp-action="UpdateOrderStatuss" class="mb-3 ms-3" style="float:left">
+                                    <input name="Id" value="@item.Id" hidden>
 
+                                    <button type="submit" value="UpdateOrderStatuss" class="youBtn btn btn-outline-primary" disabled>Recived</button>
+                                </form>
                                 }
+
+                                    
                               
                                 <button class="myBtn btn btn-outline-warning mb-3 ms-3 me-5" style="float:right">see more</button>
                                </div>

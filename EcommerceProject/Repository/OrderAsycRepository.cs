@@ -2,6 +2,8 @@
 using EcommerceProject.Context;
 using EcommerceProject.Models;
 using EcommerceProject.Repository.Interface;
+using Microsoft.AspNetCore.Http;
+using Microsoft.CodeAnalysis;
 
 namespace EcommerceProject.Repository
 {
@@ -13,28 +15,40 @@ namespace EcommerceProject.Repository
             this.context = context;
         }
 
-        public async Task<List<GetOrder>> GetAllOrders()
+        public async Task<List<GetAllOrdersForAdmin>> GetAllOrders()
         {
-            var query = @"select
-                        ROW_NUMBER() OVER(ORDER BY o.Id desc) as SrNo,
-                        o.Id,p.ProductName,o.ShippingAddress,o.OrderStatus,o.Quantity,
-                        o.BillingAddress,o.CreatedDate,
-                        o.MobileNo,o.TotalAmmount from tblOrder o
-                        inner join tblProducts p on o.ProductId=p.Id where  o.IsDeleted=0 Order By Id Desc";
+
+            //SrNo,ProductId,ProductName,OrderCounts,OrderStatus,OrderQuantity,Available_Products
+            var query = @"select   ROW_NUMBER() OVER (
+                        Order By Os.OrderStatus
+                        ) SrNo,
+                        p.Id as ProductId,p.ProductName,Count(p.Id) as OrderCounts,
+                        Os.OrderStatus,Os.Id,(select sum(Quantity) from tblOrder where ProductId=p.Id) 
+                        as OrderQuantity,p.ProductQuantity as Available_Products from tblOrder o
+                        inner join tblProducts p on o.ProductId=p.Id
+                        inner join tblorderStatus os on o.OrderStatusId=os.Id
+                        where   o.IsDeleted=0 group by p.Id,p.ProductName,
+                        Os.OrderStatus,p.ProductQuantity,Os.Id  Order by Os.Id";
+
             using(var connection=context.CreateConnection())
             {
-                var orders = await connection.QueryAsync<GetOrder>(query);
+                var orders = await connection.QueryAsync<GetAllOrdersForAdmin>(query);
 
                 return orders.ToList();
             }
         }
 
         public async Task<List<GetOrder>> GetMyOrders(long userid)
+        
+        
+        
         {
-            var query = @"select o.Id,p.ImageUrl,p.ProductName,o.ShippingAddress,o.OrderStatus,
+            var query = @"select o.Id,o.OrderStatusId,p.ImageUrl,p.ProductName,o.ShippingAddress,os.OrderStatus,
                         o.BillingAddress,o.CreatedDate as OrderDate,
                         o.MobileNo,o.TotalAmmount from tblOrder o
-                        inner join tblProducts p on o.ProductId=p.Id where CustomerId=@UserId and o.IsDeleted=0";
+                        inner join tblProducts p on o.ProductId=p.Id 
+                        inner join tblOrderStatus os on o.OrderStatusId=os.Id
+                        where CustomerId=@UserId and o.IsDeleted=0 order by o.OrderStatusId ";
             using(var connection=context.CreateConnection())
             {
                 var orders = await connection.QueryAsync<GetOrder>(query,new { UserId=userid });
@@ -52,15 +66,52 @@ namespace EcommerceProject.Repository
             }
         }
 
+        public async Task<UpdateOrderBillingAddress> GetOrdersForAdminUpdate(long productId)
+        {
+            var query = @"select   
+                p.Id as ProductId,p.ProductName,Count(p.Id) as OrderCounts,
+                Os.OrderStatus,(select sum(Quantity) from tblOrder where ProductId=p.Id) 
+                as OrderQuantity,p.ProductQuantity as Available_Products from tblOrder o
+                inner join tblProducts p on o.ProductId=p.Id
+                inner join tblorderStatus os on o.OrderStatusId=os.Id
+                where   o.IsDeleted=0 and p.Id=@ProductId 
+                group by p.Id,p.ProductName,Os.OrderStatus,p.ProductQuantity";
+            using(var connection=context.CreateConnection())
+            {
+                var result=await connection.QueryAsync<UpdateOrderBillingAddress>(query,new{ProductId=productId});
+                return result.FirstOrDefault();
+            }
+        }
+
         public async Task<long> OrdreItem(Order order)
         {
-            var query = @"insert into tblOrder(CustomerId,ProductId,TotalAmmount,OrderStatus,BillingAddress,ShippingAddress,CreatedBy,CreatedDate,IsDeleted,MobileNo,Quantity) 
+            var query = @"insert into tblOrder(CustomerId,ProductId,TotalAmmount,OrderStatusId,BillingAddress,
 
-                         values(@CustomerId,@ProductId,@TotalAmmount,@OrderStatus,@BillingAddress,@ShippingAddress,@CreatedBy,@CreatedDate,0,@MobileNo,@Quantity)";
+                         ShippingAddress,CreatedBy,CreatedDate,IsDeleted,MobileNo,Quantity)
+
+                         values (@CustomerId,@ProductId,@TotalAmmount,@OrderStatusId,@BillingAddress,
+
+                         @ShippingAddress,@CreatedBy,@CreatedDate,0,@MobileNo,@Quantity)";
+
             using(var connection=context.CreateConnection())
             {
                 order.CreatedDate=DateTime.Now;
-                order.OrderStatus ="Pending";
+
+                order.OrderStatusId =1;
+
+                var AvailableQuantity = await connection.QueryFirstOrDefaultAsync<long>
+
+                    (@"select ProductQuantity from tblProducts where Id=@ProductId", 
+                    
+                    new { ProductId = order.ProductId });
+                AvailableQuantity=AvailableQuantity - order.Quantity;
+
+                var queryupProduct = await connection.ExecuteAsync
+
+                (@"Update tblProducts set ProductQuantity=@ProductQuantity where Id=@ProductId", 
+
+                new { ProductQuantity = AvailableQuantity, ProductId = order.ProductId });
+
 
                 var result = await connection.ExecuteAsync(query, order);
                 return result;  
@@ -69,32 +120,33 @@ namespace EcommerceProject.Repository
 
         public async Task<long> UpdateOrderStatuss(UpdateOrderStatus updateordstatus)
         {
-            var query = @"Update tblOrder Set OrderStatus=@OrderStatus where Id=@Id";
+            var query = @"Update tblOrder Set OrderStatusId=@OrderStatusId where Id=@Id";
 
             using(var connection=context.CreateConnection())
             {
-
+                updateordstatus.OrderStatusId = 4;
                 var result = await connection.ExecuteAsync(query, updateordstatus);
 
                 return result;
             }
         }
 
-        public async Task<long> UpdateOrdre(Order order)
+        public async Task<long> UpdateOrdre(UpdateOrderBillingAddress order)
         {
             order.ModifiedDate = DateTime.Now;  
-            var query = @"update tblOrder set	CustomerId=@CustomerId,ProductId=@ProductId,TotalAmmount=@TotalAmmount,
-
-                       OrderStatus=@OrderStatus,BillingAddress=@BillingAddress,ShippingAddress=@ShippingAddress,
-
-                       CreatedBy=@CreatedBy,CreatedDate=@CreatedDate,ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,
-
-                       IsDeleted=@IsDeleted,Quantity=@Quantity,MobileNo=@MobileNo where Id=@Id";
+            var query = @"update tblOrder set BillingAddress=@BillingAddress,	
+                        OrderStatusId=@OrderStatusId,ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate
+                        where ProductId=@ProductId ;";
 
             using(var connection=context.CreateConnection())
             {
 
-                var result=await connection.ExecuteAsync(query,order);
+                var result=await connection.ExecuteAsync(query, 
+                
+                new { OrderStatusId =order.OrderStatusId,ModifiedBy=order.ModifiedBy,
+                      ModifiedDate=DateTime.Now,ProductId=order.ProductId,
+                      BillingAddress=order.BillingAddress
+                      });
 
                 return result;  
 

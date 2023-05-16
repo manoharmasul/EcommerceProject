@@ -114,21 +114,22 @@ namespace EcommerceProject.Controllers
         // GET: OrderController/Edit/5
         public async Task<ActionResult> UpdateOrder(long id)
         {
-            var ord=await orderasyncrepo.GetOrderById(id);
+            //var ord=await orderasyncrepo.GetOrderById(id);
+            var ord = await orderasyncrepo.GetOrdersForAdminUpdate(id);
             return View(ord);
         }
 
         // POST: OrderController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> UpdateOrder(Order updateorder)
+        public async Task<ActionResult> UpdateOrder(UpdateOrderBillingAddress updateorder)
         {
             try
             {
                
                 var uId = HttpContext.Session.GetString("userId");
                 var UserId = Int32.Parse(uId);
-                updateorder.modifiedBy = UserId;
+                updateorder.ModifiedBy = UserId;
 
                 var ord = await orderasyncrepo.UpdateOrdre(updateorder);
 
